@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Book {
@@ -11,43 +12,45 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(nullable = false)
+    @NotNull
     private String title;
 
-    @Column(nullable = false)
+    @NotNull
     private String author;
 
     @Column(nullable = true)
     private String genre;
 
-    @Column(nullable = false)
+    @NotNull
     private String image;
 
-    @Column(nullable = false)
+    @NotNull
     private String subtitle;
 
-    @Column(nullable = false)
+    @NotNull
     private String year;
 
-    @Column(nullable = false)
+    @NotNull
     private String publisher;
 
-    @Column(nullable = false)
+    @NotNull
     private String isbn;
 
-    @Column(nullable = false)
+    @NotNull
     private int pages;
 
+    public Book(){}
+
     public Book(String bookTitle, String bookAuthor, String bookGenre, String bookImage, String bookSubtitle, String bookYear, String bookPublisher, String bookIsbn, int bookPages) {
-        title = bookTitle;
-        author = bookAuthor;
-        genre = bookGenre;
-        image = bookImage;
-        subtitle = bookSubtitle;
-        year = bookYear;
-        publisher = bookPublisher;
-        isbn = bookIsbn;
-        pages = bookPages;
+        setTitle(bookTitle);
+        setAuthor(bookAuthor);
+        setGenre(bookGenre);
+        setImage(bookImage);
+        setSubtitle(bookSubtitle);
+        setYear(bookYear);
+        setPublisher(bookPublisher);
+        setIsbn(bookIsbn);
+        setPages(bookPages);
     }
 
     public long getId() {
