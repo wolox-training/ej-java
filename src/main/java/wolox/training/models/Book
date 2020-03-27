@@ -18,7 +18,6 @@ public class Book {
     @NotNull
     private String author;
 
-    @Column(nullable = true)
     private String genre;
 
     @NotNull
