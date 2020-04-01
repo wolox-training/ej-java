@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import wolox.training.exceptions.BookIdMismatchException;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
@@ -52,6 +53,9 @@ public class BookController {
 
     @PutMapping("/{id}")
     public Book updateBook(@RequestBody Book book, @PathVariable Long id) {
+        if (book.getId() != id) {
+            throw new BookIdMismatchException();
+        }
         bookRepository.findById(id)
             .orElseThrow(() -> new BookNotFoundException());
         return bookRepository.save(book);
