@@ -1,6 +1,5 @@
 package wolox.training.controllers;
 
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -36,9 +35,7 @@ public class BookController {
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
-        Optional<Book> book = bookRepository.findById(id).orElseThrow(new BookNotFoundException());
-
-        return book;
+        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException());
     }
 
     @PostMapping
@@ -49,8 +46,14 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        Optional<Book> book = bookRepository.findById(id).orElseThrow(new BookNotFoundException());
+        bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException());
         bookRepository.deleteById(id);
     }
 
+    @PutMapping("/{id}")
+    public Book updateBook(@RequestBody Book book, @PathVariable Long id) {
+        bookRepository.findById(id)
+            .orElseThrow(() -> new BookNotFoundException());
+        return bookRepository.save(book);
+    }
 }
