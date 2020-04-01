@@ -2,6 +2,7 @@ package wolox.training.models;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import wolox.training.exceptions.BookAlreadyOwnedException;
 
 @Entity
 @Table(name = "users")
@@ -66,10 +68,21 @@ public class User {
     }
 
     public List<Book> getBooks() {
-        return books;
+        return (List<Book>) Collections.unmodifiableList(books);
     }
 
     public void setBooks(List<Book> books) {
         this.books = books;
+    }
+
+    public void addBook(Book book) {
+        if (books.contains(book)) {
+            throw new BookAlreadyOwnedException();
+        }
+        this.books.add(book);
+    }
+
+    public void deleteBook(Book book) {
+        books.remove(book);
     }
 }
