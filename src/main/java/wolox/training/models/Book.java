@@ -45,7 +45,6 @@ public class Book {
     public Book(){}
 
     public Book(String bookTitle, String bookAuthor, String bookGenre, String bookImage, String bookSubtitle, String bookYear, String bookPublisher, String bookIsbn, int bookPages) {
-        this.id = id;
         setTitle(bookTitle);
         setAuthor(bookAuthor);
         setGenre(bookGenre);

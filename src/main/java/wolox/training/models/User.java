@@ -36,7 +36,6 @@ public class User {
     public User(){}
 
     public User(String userName, String name, LocalDate birthDate, List<Book> books) {
-        this.id = id;
         setUserName(userName);
         setName(name);
         setBirthDate(birthDate);
