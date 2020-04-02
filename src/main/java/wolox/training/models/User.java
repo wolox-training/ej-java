@@ -43,6 +43,10 @@ public class User {
         setBooks(books);
     }
 
+    public long getId() {
+        return id;
+    }
+
     public String getUserName() {
         return userName;
     }
