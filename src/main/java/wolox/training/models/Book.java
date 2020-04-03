@@ -1,4 +1,5 @@
 package wolox.training.models;
+import com.google.common.base.Preconditions;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
