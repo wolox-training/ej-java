@@ -52,7 +52,7 @@ public class User {
     }
 
     public void setUserName(String userName) {
-        Preconditions.checkNotNull(userName);
+        Preconditions.checkArgument(userName != null && !userName.isEmpty());
         this.userName = userName;
     }
 
@@ -61,7 +61,7 @@ public class User {
     }
 
     public void setName(String name) {
-        Preconditions.checkNotNull(name);
+        Preconditions.checkArgument(name != null && !name.isEmpty());
         this.name = name;
     }
 
@@ -79,7 +79,7 @@ public class User {
     }
 
     public void setBooks(List<Book> books) {
-        Preconditions.checkNotNull(books);
+        Preconditions.checkArgument(books != null && !books.isEmpty());
         this.books = books;
     }
 

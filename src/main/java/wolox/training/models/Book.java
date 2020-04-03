@@ -38,14 +38,14 @@ public class Book {
     private String isbn;
 
     @NotNull
-    private int pages;
+    private Integer pages;
 
     @ManyToMany(mappedBy = "books")
     private List<User> users;
 
     public Book(){}
 
-    public Book(String bookTitle, String bookAuthor, String bookGenre, String bookImage, String bookSubtitle, String bookYear, String bookPublisher, String bookIsbn, int bookPages) {
+    public Book(String bookTitle, String bookAuthor, String bookGenre, String bookImage, String bookSubtitle, String bookYear, String bookPublisher, String bookIsbn, Integer bookPages) {
         setTitle(bookTitle);
         setAuthor(bookAuthor);
         setGenre(bookGenre);
@@ -66,7 +66,7 @@ public class Book {
     }
 
     public void setTitle(String title) {
-        Preconditions.checkNotNull(title);
+        Preconditions.checkArgument(title != null && !title.isEmpty());
         this.title = title;
     }
 
@@ -75,7 +75,7 @@ public class Book {
     }
 
     public void setAuthor(String author) {
-        Preconditions.checkNotNull(author);
+        Preconditions.checkArgument(author != null && !author.isEmpty());
         this.author = author;
     }
 
@@ -84,7 +84,9 @@ public class Book {
     }
 
     public void setGenre(String genre) {
-        Preconditions.checkNotNull(genre);
+        if (genre != null) {
+            Preconditions.checkArgument(!genre.isEmpty());
+        }
         this.genre = genre;
     }
 
@@ -93,7 +95,7 @@ public class Book {
     }
 
     public void setImage(String image) {
-        Preconditions.checkNotNull(image);
+        Preconditions.checkArgument(image != null && !image.isEmpty());
         this.image = image;
     }
 
@@ -102,7 +104,7 @@ public class Book {
     }
 
     public void setSubtitle(String subtitle) {
-        Preconditions.checkNotNull(subtitle);
+        Preconditions.checkArgument(subtitle != null && !subtitle.isEmpty());
         this.subtitle = subtitle;
     }
 
@@ -111,7 +113,7 @@ public class Book {
     }
 
     public void setYear(String year) {
-        Preconditions.checkNotNull(year);
+        Preconditions.checkArgument(year != null && !year.isEmpty());
         this.year = year;
     }
 
@@ -120,7 +122,7 @@ public class Book {
     }
 
     public void setPublisher(String publisher) {
-        Preconditions.checkNotNull(publisher);
+        Preconditions.checkArgument(publisher != null && !publisher.isEmpty());
         this.publisher = publisher;
     }
 
@@ -129,7 +131,7 @@ public class Book {
     }
 
     public void setIsbn(String isbn) {
-        Preconditions.checkNotNull(isbn);
+        Preconditions.checkArgument(isbn != null && !isbn.isEmpty());
         this.isbn = isbn;
     }
 
@@ -137,7 +139,8 @@ public class Book {
         return pages;
     }
 
-    public void setPages(int pages) {
+    public void setPages(Integer pages) {
+        Preconditions.checkArgument(pages != null && pages > 0);
         this.pages = pages;
     }
 }
