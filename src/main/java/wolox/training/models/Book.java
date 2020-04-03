@@ -1,4 +1,6 @@
 package wolox.training.models;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@ApiModel(description = "Books from the library")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,6 +36,7 @@ public class Book {
     @NotNull
     private String publisher;
 
+    @ApiModelProperty(notes = "Unique identification code for book")
     @NotNull
     private String isbn;
 
