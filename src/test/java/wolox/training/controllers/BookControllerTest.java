@@ -79,7 +79,7 @@ public class BookControllerTest {
         mvc.perform(get("/api/books/1")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$title", is(book.getTitle())));
+            .andExpect(jsonPath("$.title", is(book.getTitle())));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class BookControllerTest {
         mvc.perform(post("/api/books")
             .content(objectMapper.writeValueAsString(book))
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
     }
 
     @Test
@@ -114,20 +114,54 @@ public class BookControllerTest {
     }
 
     @Test
-    public void givenMatchingIds_whenUpdatesABook_thenReturnOk() throws Exception {
-        Book book = new Book("Mi isla", "Elisabet Benavent", "romance",
+    public void givenAValidBook_whenUpdatesABook_thenReturnOk() throws Exception {
+        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
             "image.png", "De la autora de En los Zapatos de Valeria", "2018",
             "Suma de Letras", "9789877390957", 536);
 
         given(repository.findById(1L)).willReturn(Optional.of(book));
 
         book.setImage("image2.png");
-        System.out.print(book);
 
         mvc.perform(put("/api/books/1")
             .content(objectMapper.writeValueAsString(book))
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$image", is(book.getImage())));
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    public void givenMismatchingIds_whenUpdatesABook_thenReturnBadRequest() throws Exception {
+        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
+            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
+            "Suma de Letras", "9789877390957", 536);
+
+        given(repository.findById(1L)).willReturn(Optional.of(book));
+
+        book.setImage("image2.png");
+
+        mvc.perform(put("/api/books/2")
+            .content(objectMapper.writeValueAsString(book))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenAValidId_whenDeletesABook_thenReturnOk() throws Exception {
+        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
+            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
+            "Suma de Letras", "9789877390957", 536);
+
+        given(repository.findById(1L)).willReturn(Optional.of(book));
+
+        mvc.perform(delete("/api/books/1")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    public void givenInvalidId_whenDeletesABook_thenReturnNotFound() throws Exception {
+        mvc.perform(delete("/api/books/1")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
     }
 }
