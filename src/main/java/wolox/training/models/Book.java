@@ -2,6 +2,7 @@ package wolox.training.models;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,11 +46,24 @@ public class Book {
     private Integer pages;
 
     @ManyToMany(mappedBy = "books")
-    private List<User> users;
+    private List<User> users = new ArrayList<User>();;
 
     public Book(){}
 
     public Book(String bookTitle, String bookAuthor, String bookGenre, String bookImage, String bookSubtitle, String bookYear, String bookPublisher, String bookIsbn, Integer bookPages) {
+        setTitle(bookTitle);
+        setAuthor(bookAuthor);
+        setGenre(bookGenre);
+        setImage(bookImage);
+        setSubtitle(bookSubtitle);
+        setYear(bookYear);
+        setPublisher(bookPublisher);
+        setIsbn(bookIsbn);
+        setPages(bookPages);
+    }
+
+    public Book(long id, String bookTitle, String bookAuthor, String bookGenre, String bookImage, String bookSubtitle, String bookYear, String bookPublisher, String bookIsbn, Integer bookPages) {
+        this.id = id;
         setTitle(bookTitle);
         setAuthor(bookAuthor);
         setGenre(bookGenre);
