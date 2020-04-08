@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +44,21 @@ public class UserControllerTest {
 
     @MockBean
     private UserRepository userRepository;
+    private User user;
+    private User userWithId;
+    private Book book;
+
+    @Before
+    public void setUp() {
+        user = new User("bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
+        userWithId = new User(1,"jsmith", "Jhon Smith", LocalDate.of(1980, 2, 3));
+        book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
+            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
+            "Suma de Letras", "9789877390957", 536);
+    }
 
     @Test
     public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
-        User user = new User("bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
-
         List<User> allUsers = Arrays.asList(user);
 
         given(userRepository.findAll()).willReturn(allUsers);
@@ -73,8 +84,6 @@ public class UserControllerTest {
 
     @Test
     public void givenUser_whenGetAnUser_thenReturnJson() throws Exception {
-        User user = new User("bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
-
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
         mvc.perform(get("/api/users/1")
@@ -92,8 +101,6 @@ public class UserControllerTest {
 
     @Test
     public void givenAValidUser_whenCreatesAnUser_thenReturnJson() throws Exception {
-        User user = new User("bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
-
         mvc.perform(post("/api/users")
             .content(objectMapper.writeValueAsString(user))
             .contentType(MediaType.APPLICATION_JSON))
@@ -102,36 +109,30 @@ public class UserControllerTest {
 
     @Test
     public void givenAValidUser_whenUpdatesAnUser_thenReturnOk() throws Exception {
-        User user = new User(1,"bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
+        given(userRepository.findById(1L)).willReturn(Optional.of(userWithId));
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
-
-        user.setName("Bob Parker III");
+        userWithId.setName("Bob Parker III");
 
         mvc.perform(put("/api/users/1")
-            .content(objectMapper.writeValueAsString(user))
+            .content(objectMapper.writeValueAsString(userWithId))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
     }
 
     @Test
     public void givenMismatchingIds_whenUpdatesAnUser_thenReturnBadRequest() throws Exception {
-        User user = new User(1, "bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
-
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findById(1L)).willReturn(Optional.of(userWithId));
 
         user.setName("Bob Parker III");
 
         mvc.perform(put("/api/users/2")
-            .content(objectMapper.writeValueAsString(user))
+            .content(objectMapper.writeValueAsString(userWithId))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
     }
 
     @Test
     public void givenAValidId_whenDeletesAnUser_thenReturnOk() throws Exception {
-        User user = new User("bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
-
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
         mvc.perform(delete("/api/users/1")
@@ -148,13 +149,7 @@ public class UserControllerTest {
 
     @Test
     public void givenAnUser_whenAddingABook_thenReturnOk() throws Exception {
-        User user = new User(1,"bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
-
-        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
-
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findById(1L)).willReturn(Optional.of(userWithId));
         given(bookRepository.findById(1L)).willReturn(Optional.of(book));
 
         mvc.perform(post("/api/users/1/books/1")
@@ -164,9 +159,7 @@ public class UserControllerTest {
 
     @Test
     public void givenAnUserAndInvalidBook_whenAddingABook_thenReturnNotFoundError() throws Exception {
-        User user = new User(1,"bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
-
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findById(1L)).willReturn(Optional.of(userWithId));
 
         mvc.perform(post("/api/users/1/books/1")
             .contentType(MediaType.APPLICATION_JSON))
@@ -175,10 +168,6 @@ public class UserControllerTest {
 
     @Test
     public void givenNoneUser_whenAddingABook_thenReturnNotFoundError() throws Exception {
-        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
-
         given(bookRepository.findById(1L)).willReturn(Optional.of(book));
 
         mvc.perform(post("/api/users/1/books/1")
@@ -188,13 +177,7 @@ public class UserControllerTest {
 
     @Test
     public void givenAnUser_whenDeletingABook_thenReturnOk() throws Exception {
-        User user = new User(1,"bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
-
-        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
-
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findById(1L)).willReturn(Optional.of(userWithId));
         given(bookRepository.findById(1L)).willReturn(Optional.of(book));
 
         mvc.perform(delete("/api/users/1/books/1")
@@ -204,9 +187,7 @@ public class UserControllerTest {
 
     @Test
     public void givenAnUserAndInvalidBook_whenDeletingABook_thenReturnNotFoundError() throws Exception {
-        User user = new User(1,"bparker", "Bob Parker", LocalDate.of(1990, 3, 2));
-
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findById(1L)).willReturn(Optional.of(userWithId));
 
         mvc.perform(delete("/api/users/1/books/1")
             .contentType(MediaType.APPLICATION_JSON))
@@ -215,11 +196,7 @@ public class UserControllerTest {
 
     @Test
     public void givenNoneUser_whenDeletingABook_thenReturnNotFoundError() throws Exception {
-        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
-
-        given(bookRepository.findById(1L)).willReturn(Optional.of(book));
+        given(bookRepository.findById(1L))  .willReturn(Optional.of(book));
 
         mvc.perform(delete("/api/users/1/books/1")
             .contentType(MediaType.APPLICATION_JSON))

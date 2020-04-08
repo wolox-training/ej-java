@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +39,23 @@ public class BookControllerTest {
 
     @MockBean
     private BookRepository repository;
+    private Book book;
+    private Book bookWithId;
 
-    @Test
-    public void givenBooks_whenGetBooks_thenReturnJsonArray() throws Exception {
-        Book book = new Book("Mi isla", "Elisabet Benavent", "romance",
+
+    @Before
+    public void setUp() {
+        book = new Book("Mi isla", "Elisabet Benavent", "romance",
             "image.png", "De la autora de En los Zapatos de Valeria", "2018",
             "Suma de Letras", "9789877390957", 536);
 
+        bookWithId = new Book(1, "Mi isla", "Elisabet Benavent", "romance",
+            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
+            "Suma de Letras", "9789877390957", 536);
+    }
+
+    @Test
+    public void givenBooks_whenGetBooks_thenReturnJsonArray() throws Exception {
         List<Book> allBooks = Arrays.asList(book);
 
         given(repository.findAll()).willReturn(allBooks);
@@ -70,10 +81,6 @@ public class BookControllerTest {
 
     @Test
     public void givenBook_whenGetABook_thenReturnJson() throws Exception {
-        Book book = new Book("Mi isla", "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
-
         given(repository.findById(1L)).willReturn(Optional.of(book));
 
         mvc.perform(get("/api/books/1")
@@ -91,10 +98,6 @@ public class BookControllerTest {
 
     @Test
     public void givenAValidBook_whenCreatesABook_thenReturnJson() throws Exception {
-        Book book = new Book("Mi isla", "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
-
         mvc.perform(post("/api/books")
             .content(objectMapper.writeValueAsString(book))
             .contentType(MediaType.APPLICATION_JSON))
@@ -102,56 +105,32 @@ public class BookControllerTest {
     }
 
     @Test
-    public void givenAnInvalidBook_whenCreatesABook_thenReturnJsonError() throws Exception {
-        Book book = new Book(null, "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
-
-        mvc.perform(post("/api/books")
-            .content(objectMapper.writeValueAsString(book))
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
     public void givenAValidBook_whenUpdatesABook_thenReturnOk() throws Exception {
-        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
+        given(repository.findById(1L)).willReturn(Optional.of(bookWithId));
 
-        given(repository.findById(1L)).willReturn(Optional.of(book));
-
-        book.setImage("image2.png");
+        bookWithId.setImage("image2.png");
 
         mvc.perform(put("/api/books/1")
-            .content(objectMapper.writeValueAsString(book))
+            .content(objectMapper.writeValueAsString(bookWithId))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
     }
 
     @Test
     public void givenMismatchingIds_whenUpdatesABook_thenReturnBadRequest() throws Exception {
-        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
+        given(repository.findById(1L)).willReturn(Optional.of(bookWithId));
 
-        given(repository.findById(1L)).willReturn(Optional.of(book));
-
-        book.setImage("image2.png");
+        bookWithId.setImage("image2.png");
 
         mvc.perform(put("/api/books/2")
-            .content(objectMapper.writeValueAsString(book))
+            .content(objectMapper.writeValueAsString(bookWithId))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
     }
 
     @Test
     public void givenAValidId_whenDeletesABook_thenReturnOk() throws Exception {
-        Book book = new Book(1,"Mi isla", "Elisabet Benavent", "romance",
-            "image.png", "De la autora de En los Zapatos de Valeria", "2018",
-            "Suma de Letras", "9789877390957", 536);
-
-        given(repository.findById(1L)).willReturn(Optional.of(book));
+        given(repository.findById(1L)).willReturn(Optional.of(bookWithId));
 
         mvc.perform(delete("/api/books/1")
             .contentType(MediaType.APPLICATION_JSON))
