@@ -1,5 +1,7 @@
 package wolox.training.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.google.common.base.Preconditions;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import wolox.training.exceptions.BookAlreadyOwnedException;
+import wolox.training.services.PasswordEncoderService;
 
 @Entity
 @Table(name = "users")
@@ -30,6 +33,10 @@ public class User {
 
     @NotNull
     private LocalDate birthDate;
+
+    @NotNull
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private String password;
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     private List<Book> books = new ArrayList<Book>();
@@ -86,6 +93,16 @@ public class User {
 
     public void setBooks(List<Book> books) {
         this.books = books;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        Preconditions.checkArgument(password != null && !password.isEmpty());
+
+        this.password = PasswordEncoderService.encode(password);
     }
 
     public void addBook(Book book) {

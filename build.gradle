@@ -35,6 +35,8 @@ dependencies {
 	compile('org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE')
 	implementation 'junit:junit:4.12'
 	testCompile('com.h2database:h2')
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.security:spring-security-test'
 }
 
 test {
