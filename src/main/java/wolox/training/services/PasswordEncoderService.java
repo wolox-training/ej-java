@@ -16,6 +16,6 @@ public class PasswordEncoderService {
         return passwordEncoder().encode(password);
     }
 
-    public static boolean matches(String password, String savedPassword) {
+    public static boolean matches(CharSequence password, String savedPassword) {
         return passwordEncoder().matches(password, savedPassword);    }
 }

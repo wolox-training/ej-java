@@ -57,13 +57,15 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable Long id) {
-        if (user.getId() != id) {
+    public User updateUser(@RequestBody User editedUser, @PathVariable Long id) {
+        if (editedUser.getId() != id) {
             throw new UserIdMismatchException();
         }
-        userRepository.findById(id)
+
+        User user = userRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException());
-        return userRepository.save(user);
+
+        return userService.updateUser(user, editedUser);
     }
 
     @PostMapping("/{user_id}/books/{book_id}")

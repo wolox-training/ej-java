@@ -19,4 +19,12 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    public User updateUser(User user, User editedUser) {
+        user.setUserName(editedUser.getUserName());
+        user.setName(editedUser.getName());
+        user.setBirthDate(editedUser.getBirthDate());
+
+        return userRepository.save(user);
+    }
 }
