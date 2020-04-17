@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import wolox.training.models.Book;
 import wolox.training.models.User;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
+import wolox.training.services.UserService;
 
 @RestController
 @RequestMapping("/api/users")
@@ -28,6 +30,9 @@ public class UserController {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public Iterable findAll() {
@@ -52,13 +57,15 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable Long id) {
-        if (user.getId() != id) {
+    public User updateUser(@RequestBody User editedUser, @PathVariable Long id) {
+        if (editedUser.getId() != id) {
             throw new UserIdMismatchException();
         }
-        userRepository.findById(id)
+
+        User user = userRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException());
-        return userRepository.save(user);
+
+        return userService.updateUser(user, editedUser);
     }
 
     @PostMapping("/{user_id}/books/{book_id}")
@@ -84,5 +91,15 @@ public class UserController {
 
         user.deleteBook(book);
         return userRepository.save(user);
+    }
+
+    @PutMapping("/{id}/password")
+    public User updatePassword(@RequestHeader(value = "Password") String password,
+        @PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+            .orElseThrow(UserNotFoundException::new);
+
+        return userService.updatePassword(user, password);
     }
 }
