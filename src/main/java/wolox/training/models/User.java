@@ -36,11 +36,17 @@ public class User {
 
     public User(){}
 
-    public User(String userName, String name, LocalDate birthDate, List<Book> books) {
+    public User(String userName, String name, LocalDate birthDate) {
         setUserName(userName);
         setName(name);
         setBirthDate(birthDate);
-        setBooks(books);
+    }
+
+    public User(long id, String userName, String name, LocalDate birthDate) {
+        this.id = id;
+        setUserName(userName);
+        setName(name);
+        setBirthDate(birthDate);
     }
 
     public long getId() {
@@ -79,7 +85,6 @@ public class User {
     }
 
     public void setBooks(List<Book> books) {
-        Preconditions.checkArgument(books != null && !books.isEmpty());
         this.books = books;
     }
 
