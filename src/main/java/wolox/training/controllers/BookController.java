@@ -113,7 +113,7 @@ public class BookController {
         return bookRepository.save(book);
     }
 
-    @GetMapping("/search/{isbn}")
+    @GetMapping("/search")
     @ApiOperation(value = "Retrieves a book from an ISBN")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Successfully retrieved book"),
@@ -122,7 +122,7 @@ public class BookController {
         @ApiResponse(code = 404, message = "Resource not found"),
         @ApiResponse(code = 500, message = "Internal server error")
     })
-    public ResponseEntity<Book> getBookByIsbn(@PathVariable String isbn) throws IOException {
+    public ResponseEntity<Book> search(@RequestParam(name="isbn", required = true) String isbn) throws IOException {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
 
         if (book.isPresent()) {
