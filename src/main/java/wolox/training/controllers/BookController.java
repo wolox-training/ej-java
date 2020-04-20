@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.List;
 import java.io.IOException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,6 +114,13 @@ public class BookController {
         return bookRepository.save(book);
     }
 
+    @GetMapping("/find_by_publisher_year_and_genre")
+    public List<Book> customGetBook(@RequestParam(name="publisher") String publisher,
+        @RequestParam(name="genre") String genre, @RequestParam(name="year") String year) {
+
+        return bookRepository.findByPublisherAndGenreAndYear(publisher, genre, year);
+    }
+
     @GetMapping("/search")
     @ApiOperation(value = "Retrieves a book from an ISBN")
     @ApiResponses(value = {
@@ -122,6 +130,7 @@ public class BookController {
         @ApiResponse(code = 404, message = "Resource not found"),
         @ApiResponse(code = 500, message = "Internal server error")
     })
+
     public ResponseEntity<Book> search(@RequestParam(name="isbn", required = true) String isbn) throws IOException {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
 
