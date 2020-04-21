@@ -41,8 +41,12 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public Iterable findAll() {
-        return userRepository.findAll();
+    public Iterable findAll(@RequestParam(required = false) Long id,
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String userName,
+        @RequestParam(required = false) LocalDate birthDate) {
+
+        return userRepository.findAllByFilter(id, name, userName, birthDate);
     }
 
     @GetMapping("/{id}")
