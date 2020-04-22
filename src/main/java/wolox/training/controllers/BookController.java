@@ -8,6 +8,7 @@ import java.util.List;
 import java.io.IOException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -63,10 +64,10 @@ public class BookController {
         @RequestParam(required = false) String year,
         @RequestParam(required = false) String publisher,
         @RequestParam(required = false) String isbn,
-        @RequestParam(required = false) Integer pages) {
+        @RequestParam(required = false) Integer pages, Pageable pageable) {
 
         return bookRepository.findAllByFilter(id, title, author, genre, image, subtitle,
-            year, publisher, isbn, pages);
+            year, publisher, isbn, pages, pageable);
     }
 
     @GetMapping("/{id}")
