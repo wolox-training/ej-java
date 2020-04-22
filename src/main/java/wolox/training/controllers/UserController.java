@@ -1,5 +1,6 @@
 package wolox.training.controllers;
 
+import java.awt.print.Pageable;
 import java.time.LocalDate;
 import java.util.List;
 import java.security.Principal;
@@ -44,9 +45,9 @@ public class UserController {
     public Iterable findAll(@RequestParam(required = false) Long id,
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String userName,
-        @RequestParam(required = false) LocalDate birthDate) {
+        @RequestParam(required = false) LocalDate birthDate, Pageable pageable) {
 
-        return userRepository.findAllByFilter(id, name, userName, birthDate);
+        return userRepository.findAllByFilter(id, name, userName, birthDate, pageable);
     }
 
     @GetMapping("/{id}")
