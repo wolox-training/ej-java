@@ -110,11 +110,28 @@ public class UserController {
     }
 
     @GetMapping("/find_by_birth_date_and_name")
-    public List<User> getUserByBirthDateAndName(@RequestParam(name="startDate") String startDate,
-        @RequestParam(name="endDate") String endDate, @RequestParam(name="name") String name) {
+    public List<User> getUserByBirthDateAndName(@RequestParam(name="startDate", defaultValue = "") String startDate,
+        @RequestParam(name="endDate", defaultValue = "") String endDate,
+        @RequestParam(name="name", defaultValue = "") String name) {
 
-        LocalDate firstDate = LocalDate.parse(startDate);
-        LocalDate lastDate = LocalDate.parse(endDate);
+        LocalDate firstDate;
+        LocalDate lastDate;
+
+        if (startDate.isEmpty()) {
+            firstDate = null;
+
+        } else {
+            firstDate = LocalDate.parse(startDate);
+
+        }
+
+        if (endDate.isEmpty()) {
+            lastDate = null;
+
+        } else {
+            lastDate = LocalDate.parse(endDate);
+
+        }
 
         return userRepository
             .findByBirthDateBetweenAndNameIgnoreCaseContaining(firstDate, lastDate, name);
