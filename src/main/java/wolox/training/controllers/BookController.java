@@ -54,8 +54,19 @@ public class BookController {
         @ApiResponse(code = 404, message = "Resource not found"),
         @ApiResponse(code = 500, message = "Internal server error")
     })
-    public Iterable findAll() {
-        return bookRepository.findAll();
+    public Iterable findAll(@RequestParam(required = false) Long id,
+        @RequestParam(required = false) String title,
+        @RequestParam(required = false) String author,
+        @RequestParam(defaultValue = "") String genre,
+        @RequestParam(required = false) String image,
+        @RequestParam(required = false) String subtitle,
+        @RequestParam(required = false) String year,
+        @RequestParam(required = false) String publisher,
+        @RequestParam(required = false) String isbn,
+        @RequestParam(required = false) Integer pages) {
+
+        return bookRepository.findAllByFilter(id, title, author, genre, image, subtitle,
+            year, publisher, isbn, pages);
     }
 
     @GetMapping("/{id}")
@@ -131,7 +142,6 @@ public class BookController {
         @ApiResponse(code = 404, message = "Resource not found"),
         @ApiResponse(code = 500, message = "Internal server error")
     })
-
     public ResponseEntity<Book> search(@RequestParam(name="isbn", required = true) String isbn) throws IOException {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
 
